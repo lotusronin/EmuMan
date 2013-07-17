@@ -1,8 +1,10 @@
 # File: filereader.py
 
 import configparser
+import os
 
-file_name = "/home/marcus/Programming/EmuMan/config.txt"
+file_name = os.path.dirname(os.path.abspath(__file__)) + "/config.txt"
+print(file_name)
 
 class FileReader:
 	

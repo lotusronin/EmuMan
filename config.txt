@@ -1,0 +1,36 @@
+# This is a config file for EmuMan
+
+[emulator 1]
+console = Gameboy
+emupath = /usr/bin/gvbam
+rompath = /home/marcus/Games/Emulation/Roms/pokemon rom/
+
+[emulator 2]
+console = N64
+emupath = 
+rompath = 
+
+[emulator 3]
+console = NES
+emupath =
+rompath =
+
+[emulator 4]
+console = PS1
+emupath =
+rompath =
+
+[emulator 5]
+console = PSP
+emupath =
+rompath =
+
+[emulator 6]
+console = Gamecube
+emupath =
+rompath =
+
+[emulator 7]
+console = NDS
+emupath =
+rompath =

@@ -1,0 +1,4 @@
+EmuMan
+======
+
+Emulator manager

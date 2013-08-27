@@ -36,7 +36,7 @@ def run_game() :
 
 	
 	rom = listbox2.get(ACTIVE)
-	print(rom)
+	#print(rom)
 	
 	if rom == "" or rompath == "" or emupath == "" :
 		print("Error, not a valid choice")
@@ -60,10 +60,10 @@ def updatelist(event) :
 	
 	
 	index = listbox.curselection()
-	print(index[0])
+	#print(index[0])
 	emupath = f_reader.ret_path(index[0])
 	rompath = f_reader.ret_rom(index[0])
-	print(rompath)
+	#print(rompath)
 	listbox2.delete(0,END)
 	
 	if rompath != "" :
@@ -85,12 +85,14 @@ root.title('EmuMan')
 
 frame1 = Frame(root)
 frame2 = Frame(root)
+frame3 = Frame(root)
 
 listbox = Listbox(frame1, selectmode=BROWSE)
 listbox2 = Listbox(frame2, selectmode=BROWSE)
 
-frame1.pack(side="left")
-frame2.pack(side="right")
+frame1.pack(side="left", fill="both", expand=True)
+frame3.pack(side="right")
+frame2.pack(side="right", fill="both", expand=True)
 
 text = "default"
 
@@ -102,13 +104,13 @@ for x in range(0, num_consoles) :
 	text = f_reader.get_console(x)
 	listbox.insert(END, text)
 
-listbox.pack()
-listbox2.pack()
+listbox.pack(expand=True, fill="both")
+listbox2.pack(expand=True, fill="both")
 
-window = Label(root, text="Hello, world!")
-window.pack()
+#window = Label(root, text="Hello, world!")
+#window.pack()
 
-button = Button(root, text="Start", command=run_game)
+button = Button(frame3, text="Start", command=run_game)
 button.pack()
 
 listbox.bind("<ButtonRelease-1>", updatelist)

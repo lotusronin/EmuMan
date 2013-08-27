@@ -2,13 +2,13 @@
 
 [emulator 1]
 console = Gameboy
-emupath = /usr/bin/gvbam
+emupath = gvbam
 rompath = /home/marcus/Games/Emulation/Roms/pokemon rom/
 
 [emulator 2]
 console = N64
-emupath = 
-rompath = 
+emupath = mupen64plus
+rompath = /home/marcus/Games/Emulation/Roms/n64/
 
 [emulator 3]
 console = NES

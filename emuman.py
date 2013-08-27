@@ -61,9 +61,14 @@ def updatelist(event) :
 	
 	index = listbox.curselection()
 	#print(index[0])
-	emupath = f_reader.ret_path(index[0])
-	rompath = f_reader.ret_rom(index[0])
+	emupath = f_reader.ret_path(int(index[0]))
+	rompath = f_reader.ret_rom(int(index[0]))
 	#print(rompath)
+
+	print(index[0])
+	emupath = f_reader.ret_path(int(index[0]))
+	rompath = f_reader.ret_rom(int(index[0]))
+	print(rompath)
 	listbox2.delete(0,END)
 	
 	if rompath != "" :

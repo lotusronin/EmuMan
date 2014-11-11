@@ -3,7 +3,7 @@
 [emulator 1]
 console = Gameboy
 emupath = gvbam
-rompath = /home/marcus/Games/Emulation/Roms/pokemon rom/
+rompath = /home/marcus/Games/Emulation/Roms/gba/
 
 [emulator 2]
 console = N64
@@ -17,12 +17,12 @@ rompath =
 
 [emulator 4]
 console = PS1
-emupath =
-rompath =
+emupath = pcsxr -cdfile
+rompath = /home/marcus/Games/Emulation/Roms/Final Fantasy IX [NTSC-U] [Disc1of4] [SLUS-01251]/
 
 [emulator 5]
 console = PSP
-emupath =
+emupath = ppsspp-sdl
 rompath =
 
 [emulator 6]

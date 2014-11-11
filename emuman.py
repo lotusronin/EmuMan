@@ -1,6 +1,7 @@
 #! /usr/bin/python
 # File: emuman.py
 
+from gi.repository import Gtk
 from tkinter import *
 import filereader
 import os
@@ -76,9 +77,66 @@ def updatelist(event) :
 		for f in range(0, len(contents)) :
 			if isfile(join(rompath, contents[f])) :
 				listbox2.insert(END, contents[f])
+
+
+def updatelistGTK(widget, event) :
+	global conf
+	global glistbox1
+	global glistbox2
+	global emupath
+	global rompath
 	
+	row = glistbox1.get_selected_row()
+	print("UPDATING GTK LIST!!!!!")
+	widgets = row.get_children()[0].get_children()
+
+
+	emupath = conf.ret_path(int(widgets[0].get_text()))
+	rompath = conf.ret_rom(int(widgets[0].get_text()))
+
+	print(rompath)
+	#glistbox2.clear()
+	"""
+	listbox2.delete(0,END)
+	"""
+	if rompath != "" :
+		contents = os.listdir(rompath)
+		for f in range(0, len(contents)) :
+			if isfile(join(rompath, contents[f])) :
+				h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+				#h.add(Gtk.Label(f))
+				h.add(Gtk.Label(contents[f]))
+				print(contents[f])
+				glistbox2.insert(h,-1)
+
+
+def run_gameGTK(widget) :
+	#s
+	print("RUNNING GAME!!!!")
+	global glistbox2
+	global win
+	global rompath
+	global emupath
+	global rom
 	
+
 	
+	row = glistbox2.get_selected_row()
+	widgets = row.get_children()[0].get_children()
+	rom = widgets[0].get_text()
+	print(rom)
+	
+	if rom == "" or rompath == "" or emupath == "" :
+		print("Error, not a valid choice")
+	else :
+		win.hide()
+		win.queue_draw()
+		st = emupath + ' "' + rompath + rom + '"'
+		#print(st)
+		os.system(st)
+		win.show()
+
+
 ##
 #		 #
 #	Main #
@@ -121,3 +179,66 @@ button.pack()
 listbox.bind("<ButtonRelease-1>", updatelist)
 
 root.mainloop()
+
+##
+#
+#	GTK3 port
+#
+##
+
+win = Gtk.Window()
+header = Gtk.HeaderBar()
+header.props.show_close_button = True
+header.props.title = "Emuman"
+win.set_titlebar(header)
+win.connect("delete-event", Gtk.main_quit)
+
+grid = Gtk.Grid()
+win.add(grid)
+
+frame1 = Gtk.Frame(expand=True)
+frame2 = Gtk.Frame(expand=True)
+frame3 = Gtk.Frame(expand=True)
+
+glistbox1 = Gtk.ListBox()
+glistbox2 = Gtk.ListBox()
+button1 = Gtk.Button("Start")
+button2 = Gtk.Button("Roms")
+#button3 = Gtk.Button("Emulators")
+
+#row = Gtk.ListBoxRow()
+row2 = Gtk.ListBoxRow()
+
+#row.add(button3)
+row2.add(button2)
+
+#listbox1.add(row)
+glistbox2.add(row2)
+
+frame1.add(glistbox1)
+frame2.add(glistbox2)
+frame3.add(button1)
+
+grid.add(frame1)
+grid.add(frame2)
+grid.add(frame3)
+
+
+text = "default"
+
+conf = filereader.FileReader()
+conf.read_config()
+num_consoles = conf.get_num_consoles()
+
+for x in range(0, num_consoles) :
+	text = conf.get_console(x)
+	hb = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+	hb.add(Gtk.Label(x))
+	hb.add(Gtk.Label(text))
+	glistbox1.insert(hb,-1)
+
+glistbox1.connect("row_activated", updatelistGTK)
+button1.connect("clicked", run_gameGTK)
+
+win.show_all()
+Gtk.main()

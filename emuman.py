@@ -3,6 +3,7 @@
 
 from gi.repository import Gtk
 import filereader
+import gamewidget
 import os
 from os.path import isfile, join
 
@@ -15,7 +16,7 @@ from os.path import isfile, join
 rompath = ""
 emupath = ""
 rom = ""
-
+gamegrid = []
 
 ##
 #						  #
@@ -25,20 +26,12 @@ rom = ""
 
 def updatelistGTK(widget, event) :
 	global conf
-	global glistbox1
-	global glistbox2
 	global flow
 	global win
 	global emupath
 	global rompath
 	
-	#row = glistbox1.get_selected_row()
 	print("UPDATING GTK LIST!!!!!")
-	#widgets = row.get_children()[0].get_children()
-
-
-	#emupath = conf.ret_path(int(widgets[0].get_text()))
-	#rompath = conf.ret_rom(int(widgets[0].get_text()))
 	
 	option = (combo.get_active_text()).split()
 	emupath = conf.ret_path(int(option[0]))
@@ -52,27 +45,28 @@ def updatelistGTK(widget, event) :
 		contents = os.listdir(rompath)
 		for f in range(0, len(contents)) :
 			if isfile(join(rompath, contents[f])) :
-				h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-				#h.add(Gtk.Label(f))
-				h.add(Gtk.Label(contents[f]))
+				"""
+                h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+                h.add(Gtk.Label(contents[f]))
+                """
+
+				tile = gamewidget.GameLabel(contents[f],"Game!","")
+				gamegrid.append(tile)
 				print(contents[f])
-				#glistbox2.insert(h,-1)
-				flow.add(h)
+				#flow.add(h)
+				tile.setCallback(run_game_new)
+				flow.add(tile.getWidget())
 	win.show_all()
 
 
 def run_gameGTK(widget) :
 	print("RUNNING GAME!!!!")
-	global glistbox2
 	global win
 	global rompath
 	global emupath
 	global rom
 	global flow
 	
-	#row = glistbox2.get_selected_row()
-	#widgets = row.get_children()[0].get_children()
-	#rom = widgets[0].get_text()
 	widgets = flow.get_selected_children()
 	rom = widgets[0].get_children()[0].get_children()[0].get_text()
 	print(rom)
@@ -88,6 +82,30 @@ def run_gameGTK(widget) :
 		#print(st)
 		os.system(st)
 		win.show()
+
+def run_game_new(widget, rom_name) :
+	print("RUNNING GAME!!!!")
+	global win
+	global rompath
+	global emupath
+	global rom
+	global flow
+	
+	rom = rom_name
+	print(rom)
+	
+	if rom == "" or rompath == "" or emupath == "" :
+		print("Error, not a valid choice")
+	else :
+		win.hide()
+		win.queue_draw()
+		while(Gtk.events_pending()) :
+			Gtk.main_iteration()
+		st = emupath + ' "' + rompath + rom + '"'
+		#print(st)
+		os.system(st)
+		win.show()
+
 
 def delete_row(widget) :
 	global glistbox2
@@ -115,27 +133,16 @@ vbox.pack_start(hbox, False, True, 0)
 #vbox.add(grid)
 win.add(vbox)
 
-frame1 = Gtk.Frame(expand=True)
-frame2 = Gtk.Frame(expand=True)
-frame3 = Gtk.Frame(expand=True)
+frame1 = Gtk.Frame(expand=False)
+frame3 = Gtk.Frame(expand=False)
 
-glistbox1 = Gtk.ListBox()
-glistbox2 = Gtk.ListBox()
 button1 = Gtk.Button("Start")
-button2 = Gtk.Button("Roms")
-
-row2 = Gtk.ListBoxRow()
 
 store = Gtk.ListStore(int, str)
 
-row2.add(button2)
-
-glistbox2.add(row2)
 
 combo = Gtk.ComboBoxText()
 frame1.add(combo)
-#frame1.add(glistbox1)
-#frame2.add(glistbox2)
 frame3.add(button1)
 
 scrolled = Gtk.ScrolledWindow()
@@ -143,17 +150,12 @@ scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 flow = Gtk.FlowBox()
 flow.set_valign(Gtk.Align.START)
 flow.set_max_children_per_line(30)
-#flow.add(Gtk.Button("TESTING!!!"))
 scrolled.add(flow)
 
 
-#grid.add(frame1)
-#grid.add(frame2)
-#grid.add(frame3)
-#grid.add(scrolled)
-vbox.add(scrolled)
-hbox.add(frame1)
-hbox.add(frame3)
+vbox.pack_start(scrolled, True, True, 0)
+hbox.pack_end(frame1, False, True, 0)
+hbox.pack_end(frame3, False, True, 0)
 
 text = "default"
 
@@ -166,10 +168,8 @@ for x in range(0, num_consoles) :
 	hb = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 	hb.add(Gtk.Label(x))
 	hb.add(Gtk.Label(text))
-	glistbox1.insert(hb,-1)
 	combo.append_text(str(x)+" "+text)
 
-glistbox1.connect("row_activated", updatelistGTK)
 combo.connect("changed", updatelistGTK, None)
 button1.connect("clicked", run_gameGTK)
 

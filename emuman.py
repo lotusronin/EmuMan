@@ -6,6 +6,7 @@ import filereader
 import gamewidget
 import os
 from os.path import isfile, join
+import subprocess
 
 ##
 #			  #
@@ -82,6 +83,9 @@ def run_gameGTK(widget) :
 		#print(st)
 		os.system(st)
 		win.show()
+		while(Gtk.events_pending()) :
+			Gtk.main_iteration()
+
 
 def run_game_new(widget, rom_name) :
 	print("RUNNING GAME!!!!")
@@ -103,7 +107,7 @@ def run_game_new(widget, rom_name) :
 			Gtk.main_iteration()
 		st = emupath + ' "' + rompath + rom + '"'
 		#print(st)
-		os.system(st)
+		subprocess.call([emupath,rompath+rom])
 		win.show()
 
 

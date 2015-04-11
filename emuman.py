@@ -18,6 +18,7 @@ rompath = ""
 emupath = ""
 rom = ""
 gamegrid = []
+searchterm = ""
 
 ##
 #						  #
@@ -110,6 +111,21 @@ def run_game_new(widget, rom_name) :
 		subprocess.call([emupath,rompath+rom])
 		win.show()
 
+def search_callback(widget, flow) :
+    #print(widget.get_text())
+    global searchterm
+    searchterm = widget.get_text()
+    flow.invalidate_filter()
+
+
+def game_filter(child,userdata) :
+    s = child.get_children()[0].get_children()[1].get_text()
+    if(searchterm is "") :
+        return True
+    if(searchterm in s or s in searchterm) :
+        return True
+    return False
+
 
 def delete_row(widget) :
 	global glistbox2
@@ -129,6 +145,7 @@ header.props.title = "Emuman"
 win.set_titlebar(header)
 win.connect("delete-event", Gtk.main_quit)
 win.set_default_size(240,160)
+win.set_size_request(240,160) #set minimum size
 
 grid = Gtk.Grid()
 vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -138,28 +155,29 @@ vbox.pack_start(hbox, False, True, 0)
 win.add(vbox)
 
 frame1 = Gtk.Frame(expand=False)
-frame3 = Gtk.Frame(expand=False)
 
-button1 = Gtk.Button("Start")
 
 store = Gtk.ListStore(int, str)
 
 
 combo = Gtk.ComboBoxText()
 frame1.add(combo)
-frame3.add(button1)
 
 scrolled = Gtk.ScrolledWindow()
 scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 flow = Gtk.FlowBox()
 flow.set_valign(Gtk.Align.START)
 flow.set_max_children_per_line(30)
+flow.set_filter_func(game_filter, None)
+flow.set_homogeneous(True)
 scrolled.add(flow)
 
 
 vbox.pack_start(scrolled, True, True, 0)
 hbox.pack_end(frame1, False, True, 0)
-hbox.pack_end(frame3, False, True, 0)
+search = Gtk.Entry()
+search.set_placeholder_text("Search")
+hbox.pack_end(search, True, True, 0)
 
 text = "default"
 
@@ -175,7 +193,10 @@ for x in range(0, num_consoles) :
 	combo.append_text(str(x)+" "+text)
 
 combo.connect("changed", updatelistGTK, None)
-button1.connect("clicked", run_gameGTK)
+search.connect("changed", search_callback, flow)
+
+#Grab focus from search entry
+scrolled.grab_focus()
 
 win.show_all()
 Gtk.main()

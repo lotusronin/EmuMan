@@ -122,7 +122,7 @@ def game_filter(child,userdata) :
     s = child.get_children()[0].get_children()[1].get_text()
     if(searchterm is "") :
         return True
-    if(searchterm in s or s in searchterm) :
+    if(searchterm.lower() in s.lower() or s.lower() in searchterm.lower()) :
         return True
     return False
 

@@ -45,3 +45,7 @@ class FileReader:
 	def get_console(self, n) :
 		section_list = self.config.sections()
 		return self.config.get(section_list[n], 'console')
+
+	def get_db(self, n) :
+            section_list = self.config.sections()
+            return self.config.get(section_list[n], 'dbfile')

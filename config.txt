@@ -4,6 +4,7 @@
 console = Gameboy
 emupath = gvbam
 rompath = /home/marcus/Games/Emulation/Roms/gba/
+dbfile = /home/marcus/Programming/EmuMan/db.json
 
 [emulator 2]
 console = N64

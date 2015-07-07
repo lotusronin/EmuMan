@@ -4,6 +4,7 @@
 from gi.repository import Gtk
 import filereader
 import gamewidget
+import dbreader
 import os
 from os.path import isfile, join
 import subprocess
@@ -38,7 +39,8 @@ def updatelistGTK(widget, event) :
 	option = (combo.get_active_text()).split()
 	emupath = conf.ret_path(int(option[0]))
 	rompath = conf.ret_rom(int(option[0]))
-
+	dbfile = conf.get_db(int(option[0]))
+	db = dbreader.DatabaseReader(dbfile)
 	print(rompath)
 	"""
 	listbox2.delete(0,END)
@@ -52,7 +54,7 @@ def updatelistGTK(widget, event) :
                 h.add(Gtk.Label(contents[f]))
                 """
 
-				tile = gamewidget.GameLabel(contents[f],"Game!","")
+				tile = gamewidget.GameLabel(contents[f],"Game!",db.get_value(contents[f]))
 				gamegrid.append(tile)
 				print(contents[f])
 				#flow.add(h)
@@ -108,7 +110,8 @@ def run_game_new(widget, rom_name) :
 			Gtk.main_iteration()
 		st = emupath + ' "' + rompath + rom + '"'
 		#print(st)
-		subprocess.call([emupath,rompath+rom])
+		#subprocess.call([emupath,rompath+rom])
+		subprocess.Popen([emupath,rompath+rom])
 		win.show()
 
 def search_callback(widget, flow) :
